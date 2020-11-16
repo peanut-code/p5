@@ -5,19 +5,28 @@ let board = [
     ['', '', ''],
 ];
 
+/*//////////////////////////////////////////////////////////////////////////////////middle/TO-DO
+X und O als eigene Klasse implementieren...keine Buchstaben verwenden!
+*/
+
+let players = ['x', 'o'];
 /*
 let player1 = ['x'];
 let player2 = ['o'];
 */
-
-let players = ['x', 'o'];
-
 let currentPlayer;
 let available = [];
 
+let w;
+let h;
+
+// mit gemütlicher Frame Rate ausfüllen
 function setup() {
     createCanvas(600, 600);
-    frameRate(1);//--------------------------------------------------------------------> Frame Rate
+    w = width / 3;
+    h = height / 3;
+    
+    frameRate(1);
     currentPlayer = floor(random(players.length));
 
     /*
@@ -34,7 +43,7 @@ function setup() {
         }
     }
 }
-//-------------------------------------------------------------------------------> check funktion
+// die check Funktion
 function equals3(a, b, c) {
     return (a == b && b == c && a != '');
 }
@@ -82,16 +91,17 @@ function nextTurn() {
     board[i][j] = players[currentPlayer];
     currentPlayer = (currentPlayer + 1) % players.length;
 }
-
-/*function mousePressed() {
+/*//////////////////////////////////////////////////////////////////////////////////high/TO-DO
+1. function mousePressed als nextTurn! 
+2. Array der die Position erfasst
+3. ev Grid anders aufbauen wegen der ebnötigten Koordinaten
+function mousePressed() {
 nextTurn();
 }
 */
 
 function draw() {
     background(255);
-    let w = width / 3;
-    let h = height / 3;
     strokeWeight(10);
 
 
@@ -115,14 +125,21 @@ function draw() {
             }
         }
     }
-
-
+/*/////////////////////////////////////////////////////////////////////////////////////less/TO-DO
+eine Linie durch die 3 gleichen ziehen, damit man das Ergebnis besser sieht!
+*/
     let result = checkWinner();
     if (result != null) {
         noLoop();
-        console.log(result);
+        let resultP = createP('');
+        resultP.style('font-size', '32pt');
+        if (result == 'tie') {
+            resultP.html("Tie!")
+        } else {
+            resultP.html(`${result} hat gewonnen :)`);
+        }
+    } else {
+        nextTurn();
+       // console.log(result);
     }
-
-    nextTurn();
-
 }
