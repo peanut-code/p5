@@ -67,8 +67,8 @@ function findeGewinner() {
 }
 
 // function nextTurn() {
-//     let index = floor(random(avcomputerlable.length));
-//     let spot = avcomputerlable.splice(index, 1)[0];
+//     let index = floor(random(available.length));
+//     let spot = available.splice(index, 1)[0];
 //     let i = spot[0];
 //     let j = spot[1];
 //     spielfeld[i][j] = players[aktuellerSpieler];
@@ -85,15 +85,15 @@ function mousePressed() {
             spielfeld[i][j] = ich;
             aktuellerSpieler = computer;
             //...soll die computer den nächsten Spielzug machen
-            let avcomputerlable = [];
+            let available = [];
             for (let k = 0; k < 3; k++) {
                 for (let l = 0; l < 3; l++) {
                     if (spielfeld[k][l] == '') {
-                        avcomputerlable.push({ k, l });
+                        available.push({ k, l });
                     }
                 }
             }
-            let move = random(avcomputerlable);
+            let move = random(available);
             spielfeld[move.k][move.l] = computer;
             aktuellerSpieler = ich;
         }
