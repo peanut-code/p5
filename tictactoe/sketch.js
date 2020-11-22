@@ -1,145 +1,142 @@
 
-let board = [
+let spielfeld = [
     ['', '', ''],
     ['', '', ''],
     ['', '', ''],
 ];
 
-/*//////////////////////////////////////////////////////////////////////////////////middle/TO-DO
-X und O als eigene Klasse implementieren...keine Buchstaben verwenden!
-*/
-
-let players = ['x', 'o'];
-/*
-let player1 = ['x'];
-let player2 = ['o'];
-*/
-let currentPlayer;
-let available = [];
-
 let w;
 let h;
 
-// mit gemütlicher Frame Rate ausfüllen
+let computer = 'X';
+let ich = 'O';
+let aktuellerSpieler = ich;
+let resultP;
+
 function setup() {
-    createCanvas(600, 600);
+    createCanvas(400, 400);
     w = width / 3;
     h = height / 3;
-    
-    frameRate(1);
-    currentPlayer = floor(random(players.length));
-
-    /*
-      if (random(1) < 0.5) {
-      currentPlayer = player1;
-    } else{
-    currentPlayer = player2;
-    }
-    */
-
-    for (let j = 0; j < 3; j++) {
-        for (let i = 0; i < 3; i++) {
-            available.push([i, j]);
-        }
-    }
 }
-// die check Funktion
+
 function equals3(a, b, c) {
     return (a == b && b == c && a != '');
 }
 
-function checkWinner() {
-    let winner = null;
+function findeGewinner() {
+    let gewinner = null;
 
-    //horizontaler check
-    for (let i = 0; i < 3; i++) { //i = Reihe
-        if (equals3(board[i][0], board[i][1], board[i][2])) {
-            winner = board[i][0];
+    // horizontale =)
+    for (let i = 0; i < 3; i++) {
+        if (equals3(spielfeld[i][0], spielfeld[i][1], spielfeld[i][2])) {
+            gewinner = spielfeld[i][0];
         }
     }
 
-    //vertikaler check
-    for (let i = 0; i < 3; i++) { //i = Spalte
-        if (equals3(board[0][i], board[1][i], board[2][i])) {
-            winner = board[0][i];
+    // vertikale ^^*
+    for (let i = 0; i < 3; i++) {
+        if (equals3(spielfeld[0][i], spielfeld[1][i], spielfeld[2][i])) {
+            gewinner = spielfeld[0][i];
         }
     }
 
-    //diagonaler check
-    if (equals3(board[0][0], board[1][1], board[2][2])) {
-        winner = board[0][0];
+    // Diagonal \(^_°)/
+    if (equals3(spielfeld[0][0], spielfeld[1][1], spielfeld[2][2])) {
+        gewinner = spielfeld[0][0];
+    }
+    if (equals3(spielfeld[2][0], spielfeld[1][1], spielfeld[0][2])) {
+        gewinner = spielfeld[2][0];
     }
 
-    if (equals3(board[2][0], board[1][1], board[0][2])) {
-        winner = board[2][0];
+    let openSpots = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (spielfeld[i][j] == '') {
+                openSpots++;
+            }
+        }
     }
 
 
-    if (winner == null && available.lenghth == 0) {
+    if (gewinner == null && openSpots == 0) {
         return 'tie';
     } else {
-        return winner;
+        return gewinner;
     }
 
 }
 
-function nextTurn() {
-    let index = floor(random(available.length));
-    let spot = available.splice(index, 1)[0];
-    let i = spot[0];
-    let j = spot[1];
-    board[i][j] = players[currentPlayer];
-    currentPlayer = (currentPlayer + 1) % players.length;
-}
-/*//////////////////////////////////////////////////////////////////////////////////high/TO-DO
-1. function mousePressed als nextTurn! 
-2. Array der die Position erfasst
-3. ev Grid anders aufbauen wegen der ebnötigten Koordinaten
+// function nextTurn() {
+//     let index = floor(random(avcomputerlable.length));
+//     let spot = avcomputerlable.splice(index, 1)[0];
+//     let i = spot[0];
+//     let j = spot[1];
+//     spielfeld[i][j] = players[aktuellerSpieler];
+//     aktuellerSpieler = (aktuellerSpieler + 1) % players.length;
+// }
+
 function mousePressed() {
-nextTurn();
+    if (aktuellerSpieler == ich) {
+        //der Spieler macht seinen Zug
+        let i = floor(mouseX / w);
+        let j = floor(mouseY / h);
+        //wenn der der Spielzug valide ist...
+        if (spielfeld[i][j] == '') {
+            spielfeld[i][j] = ich;
+            aktuellerSpieler = computer;
+            //...soll die computer den nächsten Spielzug machen
+            let avcomputerlable = [];
+            for (let k = 0; k < 3; k++) {
+                for (let l = 0; l < 3; l++) {
+                    if (spielfeld[k][l] == '') {
+                        avcomputerlable.push({ k, l });
+                    }
+                }
+            }
+            let move = random(avcomputerlable);
+            spielfeld[move.k][move.l] = computer;
+            aktuellerSpieler = ich;
+        }
+    }
 }
-*/
 
 function draw() {
     background(255);
-    strokeWeight(10);
-
+    strokeWeight(4);
 
     line(w, 0, w, height);
     line(w * 2, 0, w * 2, height);
     line(0, h, width, h);
     line(0, h * 2, width, h * 2);
 
-
     for (let j = 0; j < 3; j++) {
         for (let i = 0; i < 3; i++) {
-            let = x = w * i + w / 2;
-            let = y = w * j + h / 2;
-            let spot = board[i][j];
-            textSize(120);
-            textAlign(CENTER, CENTER);
-            if (spot == players[0]) {
-                text(spot, x, y);
-            } else if (spot == players[1]) {
-                text(spot, x, y);
+            let x = w * i + w / 2;
+            let y = h * j + h / 2;
+            let spot = spielfeld[i][j];
+            textSize(32);
+            let r = w / 4;
+            if (spot == ich) {
+                noFill();
+                ellipse(x, y, w / 2);
+            } else if (spot == computer) {
+                line(x - r, y - r, x + r, y + r);
+                line(x + r, y - r, x - r, y + r);
             }
+
         }
     }
-/*/////////////////////////////////////////////////////////////////////////////////////less/TO-DO
-eine Linie durch die 3 gleichen ziehen, damit man das Ergebnis besser sieht!
-*/
-    let result = checkWinner();
+
+    let result = findeGewinner();
     if (result != null) {
         noLoop();
         let resultP = createP('');
         resultP.style('font-size', '32pt');
         if (result == 'tie') {
-            resultP.html("Tie!")
+            resultP.html("Patt! =)")
         } else {
-            resultP.html(`${result} hat gewonnen :)`);
+            resultP.html(`${result} hat gewonnen!`);
         }
-    } else {
-        nextTurn();
-       // console.log(result);
+        noLoop();
     }
 }
